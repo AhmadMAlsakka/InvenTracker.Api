@@ -33,6 +33,8 @@ public partial class InventrackerContext : DbContext
 
     public virtual DbSet<Vendor> Vendors { get; set; }
 
+    public virtual DbSet<Warehouse> Warehouses { get; set; }
+
     public virtual DbSet<WarehouseOrder> WarehouseOrders { get; set; }
 
     public virtual DbSet<WarehouseOrderItem> WarehouseOrderItems { get; set; }
@@ -74,6 +76,7 @@ public partial class InventrackerContext : DbContext
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.OrderDate).HasColumnType("datetime");
             entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.WarehouseId).HasColumnName("WarehouseID");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.CustomerOrders)
                 .HasForeignKey(d => d.CustomerId)
@@ -82,6 +85,10 @@ public partial class InventrackerContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.CustomerOrders)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__CustomerO__UserI__5165187F");
+
+            entity.HasOne(d => d.Warehouse).WithMany(p => p.CustomerOrders)
+                .HasForeignKey(d => d.WarehouseId)
+                .HasConstraintName("FK__CustomerO__Wareh__60A75C0F");
         });
 
         modelBuilder.Entity<CustomerOrderItem>(entity =>
@@ -96,6 +103,7 @@ public partial class InventrackerContext : DbContext
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.UnitId).HasColumnName("UnitID");
             entity.Property(e => e.VariantId).HasColumnName("VariantID");
+            entity.Property(e => e.WarehouseId).HasColumnName("WarehouseID");
 
             entity.HasOne(d => d.Order).WithMany(p => p.CustomerOrderItems)
                 .HasForeignKey(d => d.OrderId)
@@ -112,6 +120,10 @@ public partial class InventrackerContext : DbContext
             entity.HasOne(d => d.Variant).WithMany(p => p.CustomerOrderItems)
                 .HasForeignKey(d => d.VariantId)
                 .HasConstraintName("FK__CustomerO__Varia__571DF1D5");
+
+            entity.HasOne(d => d.Warehouse).WithMany(p => p.CustomerOrderItems)
+                .HasForeignKey(d => d.WarehouseId)
+                .HasConstraintName("FK__CustomerO__Wareh__5EBF139D");
         });
 
         modelBuilder.Entity<Invoice>(entity =>
@@ -228,6 +240,21 @@ public partial class InventrackerContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Warehouse>(entity =>
+        {
+            entity.HasKey(e => e.WarehouseId).HasName("PK__Warehous__2608AFD907B675B5");
+
+            entity.Property(e => e.WarehouseId)
+                .ValueGeneratedNever()
+                .HasColumnName("WarehouseID");
+            entity.Property(e => e.Location)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.WarehouseName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<WarehouseOrder>(entity =>
         {
             entity.HasKey(e => e.OrderId).HasName("PK__Warehous__C3905BAF9A60E11C");
@@ -238,6 +265,7 @@ public partial class InventrackerContext : DbContext
             entity.Property(e => e.OrderDate).HasColumnType("datetime");
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.VendorId).HasColumnName("VendorID");
+            entity.Property(e => e.WarehouseId).HasColumnName("WarehouseID");
 
             entity.HasOne(d => d.User).WithMany(p => p.WarehouseOrders)
                 .HasForeignKey(d => d.UserId)
@@ -246,6 +274,10 @@ public partial class InventrackerContext : DbContext
             entity.HasOne(d => d.Vendor).WithMany(p => p.WarehouseOrders)
                 .HasForeignKey(d => d.VendorId)
                 .HasConstraintName("FK__Warehouse__Vendo__47DBAE45");
+
+            entity.HasOne(d => d.Warehouse).WithMany(p => p.WarehouseOrders)
+                .HasForeignKey(d => d.WarehouseId)
+                .HasConstraintName("FK__Warehouse__Wareh__619B8048");
         });
 
         modelBuilder.Entity<WarehouseOrderItem>(entity =>
@@ -260,6 +292,7 @@ public partial class InventrackerContext : DbContext
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.UnitId).HasColumnName("UnitID");
             entity.Property(e => e.VariantId).HasColumnName("VariantID");
+            entity.Property(e => e.WarehouseId).HasColumnName("WarehouseID");
 
             entity.HasOne(d => d.Order).WithMany(p => p.WarehouseOrderItems)
                 .HasForeignKey(d => d.OrderId)
@@ -276,6 +309,10 @@ public partial class InventrackerContext : DbContext
             entity.HasOne(d => d.Variant).WithMany(p => p.WarehouseOrderItems)
                 .HasForeignKey(d => d.VariantId)
                 .HasConstraintName("FK__Warehouse__Varia__4CA06362");
+
+            entity.HasOne(d => d.Warehouse).WithMany(p => p.WarehouseOrderItems)
+                .HasForeignKey(d => d.WarehouseId)
+                .HasConstraintName("FK__Warehouse__Wareh__5FB337D6");
         });
 
         OnModelCreatingPartial(modelBuilder);

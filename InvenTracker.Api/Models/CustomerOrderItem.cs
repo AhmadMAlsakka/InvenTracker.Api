@@ -19,6 +19,8 @@ public partial class CustomerOrderItem
 
     public int? UnitId { get; set; }
 
+    public int? WarehouseId { get; set; }
+
     public virtual CustomerOrder? Order { get; set; }
 
     public virtual Product? Product { get; set; }
@@ -26,4 +28,6 @@ public partial class CustomerOrderItem
     public virtual Unit? Unit { get; set; }
 
     public virtual ProductVariant? Variant { get; set; }
+
+    public virtual Warehouse? Warehouse { get; set; }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InvenTracker.Api.Models;
 
@@ -13,9 +8,9 @@ namespace InvenTracker.Api.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly InvenTrackerContext _context;
+        private readonly InventrackerContext _context;
 
-        public ProductsController(InvenTrackerContext context)
+        public ProductsController(InventrackerContext context)
         {
             _context = context;
         }

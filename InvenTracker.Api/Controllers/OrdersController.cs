@@ -12,7 +12,7 @@ namespace InvenTracker.Api.Controllers
         //Retrieve a list of all orders for a selected period of time
         public List<Order> GetOrdersforDate(DateTime startDate, DateTime endDate)
         {
-
+            return new List<Order>();
         }
     }
 }

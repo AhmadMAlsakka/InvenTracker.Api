@@ -15,9 +15,13 @@ public partial class WarehouseOrder
 
     public int Status { get; set; }
 
+    public int? WarehouseId { get; set; }
+
     public virtual User? User { get; set; }
 
     public virtual Vendor? Vendor { get; set; }
+
+    public virtual Warehouse? Warehouse { get; set; }
 
     public virtual ICollection<WarehouseOrderItem> WarehouseOrderItems { get; set; } = new List<WarehouseOrderItem>();
 }
