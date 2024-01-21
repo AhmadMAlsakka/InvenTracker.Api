@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repository\InvenTrackerRepo.Orders.cs" />
+    <Compile Remove="Repository\InvenTrackerRepository.OrderItems.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Repository\InvenTrackerRepository.OrderItems.cs" />
+    <None Include="Repository\InvenTrackerRepository.Orders.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
