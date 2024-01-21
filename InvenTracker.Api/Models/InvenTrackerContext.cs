@@ -4,72 +4,89 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InvenTracker.Api.Models;
 
-public partial class InvenTrackerContext : DbContext
+public partial class InventrackerContext : DbContext
 {
-    public InvenTrackerContext()
+    public InventrackerContext()
     {
     }
 
-    public InvenTrackerContext(DbContextOptions<InvenTrackerContext> options)
+    public InventrackerContext(DbContextOptions<InventrackerContext> options)
         : base(options)
     {
     }
 
+    public virtual DbSet<Customer> Customers { get; set; }
+
+    public virtual DbSet<CustomerOrder> CustomerOrders { get; set; }
+
+    public virtual DbSet<CustomerOrderItem> CustomerOrderItems { get; set; }
+
     public virtual DbSet<Invoice> Invoices { get; set; }
-
-    public virtual DbSet<Order> Orders { get; set; }
-
-    public virtual DbSet<OrderItem> OrderItems { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<ProductVariant> ProductVariants { get; set; }
 
+    public virtual DbSet<Unit> Units { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<Vendor> Vendors { get; set; }
+
+    public virtual DbSet<WarehouseOrder> WarehouseOrders { get; set; }
+
+    public virtual DbSet<WarehouseOrderItem> WarehouseOrderItems { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=AHMAD-PC\\MSSQLSERVER01;Database=InvenTracker;Trusted_Connection=true;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=AHMAD-PC;Database=Inventracker;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Invoice>(entity =>
+        modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.InvoiceId).HasName("PK__Invoices__D796AAD5DD544725");
+            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B88AC349C4");
 
-            entity.Property(e => e.InvoiceId)
+            entity.Property(e => e.CustomerId)
                 .ValueGeneratedNever()
-                .HasColumnName("InvoiceID");
-            entity.Property(e => e.Costs).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.Profit).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
-
-            entity.HasOne(d => d.Order).WithMany(p => p.Invoices)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__Invoices__OrderI__48CFD27E");
+                .HasColumnName("CustomerID");
+            entity.Property(e => e.Address)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.CustomerName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.LandlinePhone)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.MobilePhone)
+                .HasMaxLength(20)
+                .IsUnicode(false);
         });
 
-        modelBuilder.Entity<Order>(entity =>
+        modelBuilder.Entity<CustomerOrder>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF573F59D2");
+            entity.HasKey(e => e.OrderId).HasName("PK__Customer__C3905BAFF8B5E507");
 
             entity.Property(e => e.OrderId)
                 .ValueGeneratedNever()
                 .HasColumnName("OrderID");
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.OrderDate).HasColumnType("datetime");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+            entity.HasOne(d => d.Customer).WithMany(p => p.CustomerOrders)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK__CustomerO__Custo__52593CB8");
+
+            entity.HasOne(d => d.User).WithMany(p => p.CustomerOrders)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Orders__UserID__403A8C7D");
+                .HasConstraintName("FK__CustomerO__UserI__5165187F");
         });
 
-        modelBuilder.Entity<OrderItem>(entity =>
+        modelBuilder.Entity<CustomerOrderItem>(entity =>
         {
-            entity.HasKey(e => e.OrderItemId).HasName("PK__OrderIte__57ED06A1FF793D4E");
+            entity.HasKey(e => e.OrderItemId).HasName("PK__Customer__57ED06A124AD14CF");
 
             entity.Property(e => e.OrderItemId)
                 .ValueGeneratedNever()
@@ -77,25 +94,50 @@ public partial class InvenTrackerContext : DbContext
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.TotalSold).HasDefaultValue(0);
+            entity.Property(e => e.UnitId).HasColumnName("UnitID");
             entity.Property(e => e.VariantId).HasColumnName("VariantID");
 
-            entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
+            entity.HasOne(d => d.Order).WithMany(p => p.CustomerOrderItems)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__OrderItem__Order__440B1D61");
+                .HasConstraintName("FK__CustomerO__Order__5535A963");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.OrderItems)
+            entity.HasOne(d => d.Product).WithMany(p => p.CustomerOrderItems)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__OrderItem__Produ__44FF419A");
+                .HasConstraintName("FK__CustomerO__Produ__5629CD9C");
 
-            entity.HasOne(d => d.Variant).WithMany(p => p.OrderItems)
+            entity.HasOne(d => d.Unit).WithMany(p => p.CustomerOrderItems)
+                .HasForeignKey(d => d.UnitId)
+                .HasConstraintName("FK__CustomerO__UnitI__5812160E");
+
+            entity.HasOne(d => d.Variant).WithMany(p => p.CustomerOrderItems)
                 .HasForeignKey(d => d.VariantId)
-                .HasConstraintName("FK__OrderItem__Varia__45F365D3");
+                .HasConstraintName("FK__CustomerO__Varia__571DF1D5");
+        });
+
+        modelBuilder.Entity<Invoice>(entity =>
+        {
+            entity.HasKey(e => e.InvoiceId).HasName("PK__Invoices__D796AAD5E56084D5");
+
+            entity.HasIndex(e => e.OrderId, "UQ__Invoices__C3905BAE123F25B6").IsUnique();
+
+            entity.Property(e => e.InvoiceId)
+                .ValueGeneratedNever()
+                .HasColumnName("InvoiceID");
+            entity.Property(e => e.Costs).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.InvoiceDate).HasColumnType("datetime");
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.Profit).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.Order).WithOne(p => p.Invoice)
+                .HasForeignKey<Invoice>(d => d.OrderId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Invoices__OrderI__5BE2A6F2");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDE137AD10");
+            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDA525BE12");
 
             entity.Property(e => e.ProductId)
                 .ValueGeneratedNever()
@@ -105,37 +147,56 @@ public partial class InvenTrackerContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.TotalSold).HasDefaultValue(0);
+            entity.Property(e => e.UnitId).HasColumnName("UnitID");
+
+            entity.HasOne(d => d.Unit).WithMany(p => p.Products)
+                .HasForeignKey(d => d.UnitId)
+                .HasConstraintName("FK__Products__UnitID__3F466844");
         });
 
         modelBuilder.Entity<ProductVariant>(entity =>
         {
-            entity.HasKey(e => e.VariantId).HasName("PK__ProductV__0EA233E4EBE324BC");
+            entity.HasKey(e => e.VariantId).HasName("PK__ProductV__0EA233E449B65408");
 
             entity.Property(e => e.VariantId)
                 .ValueGeneratedNever()
                 .HasColumnName("VariantID");
             entity.Property(e => e.PriceAdjustment).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.UnitId).HasColumnName("UnitID");
             entity.Property(e => e.VariantName)
                 .HasMaxLength(255)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductVariants)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__ProductVa__Produ__3D5E1FD2");
+                .HasConstraintName("FK__ProductVa__Produ__4222D4EF");
+
+            entity.HasOne(d => d.Unit).WithMany(p => p.ProductVariants)
+                .HasForeignKey(d => d.UnitId)
+                .HasConstraintName("FK__ProductVa__UnitI__4316F928");
+        });
+
+        modelBuilder.Entity<Unit>(entity =>
+        {
+            entity.HasKey(e => e.UnitId).HasName("PK__Units__44F5EC9573179FED");
+
+            entity.Property(e => e.UnitId)
+                .ValueGeneratedNever()
+                .HasColumnName("UnitID");
+            entity.Property(e => e.UnitName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC61635A41");
-
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E45EE40482").IsUnique();
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC48073466");
 
             entity.Property(e => e.UserId)
                 .ValueGeneratedNever()
                 .HasColumnName("UserID");
-            entity.Property(e => e.Password)
+            entity.Property(e => e.PasswordHash)
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.Role)
@@ -144,6 +205,77 @@ public partial class InvenTrackerContext : DbContext
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Vendor>(entity =>
+        {
+            entity.HasKey(e => e.VendorId).HasName("PK__Vendors__FC8618D350979CB3");
+
+            entity.Property(e => e.VendorId)
+                .ValueGeneratedNever()
+                .HasColumnName("VendorID");
+            entity.Property(e => e.Address)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.LandlinePhone)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.MobilePhone)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.VendorName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<WarehouseOrder>(entity =>
+        {
+            entity.HasKey(e => e.OrderId).HasName("PK__Warehous__C3905BAF9A60E11C");
+
+            entity.Property(e => e.OrderId)
+                .ValueGeneratedNever()
+                .HasColumnName("OrderID");
+            entity.Property(e => e.OrderDate).HasColumnType("datetime");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.VendorId).HasColumnName("VendorID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.WarehouseOrders)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__Warehouse__UserI__46E78A0C");
+
+            entity.HasOne(d => d.Vendor).WithMany(p => p.WarehouseOrders)
+                .HasForeignKey(d => d.VendorId)
+                .HasConstraintName("FK__Warehouse__Vendo__47DBAE45");
+        });
+
+        modelBuilder.Entity<WarehouseOrderItem>(entity =>
+        {
+            entity.HasKey(e => e.OrderItemId).HasName("PK__Warehous__57ED06A198F54D90");
+
+            entity.Property(e => e.OrderItemId)
+                .ValueGeneratedNever()
+                .HasColumnName("OrderItemID");
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.UnitId).HasColumnName("UnitID");
+            entity.Property(e => e.VariantId).HasColumnName("VariantID");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.WarehouseOrderItems)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("FK__Warehouse__Order__4AB81AF0");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.WarehouseOrderItems)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK__Warehouse__Produ__4BAC3F29");
+
+            entity.HasOne(d => d.Unit).WithMany(p => p.WarehouseOrderItems)
+                .HasForeignKey(d => d.UnitId)
+                .HasConstraintName("FK__Warehouse__UnitI__4D94879B");
+
+            entity.HasOne(d => d.Variant).WithMany(p => p.WarehouseOrderItems)
+                .HasForeignKey(d => d.VariantId)
+                .HasConstraintName("FK__Warehouse__Varia__4CA06362");
         });
 
         OnModelCreatingPartial(modelBuilder);
