@@ -9,7 +9,7 @@ public partial class Invoice
 
     public int? OrderId { get; set; }
 
-    public DateOnly InvoiceDate { get; set; }
+    public DateTime InvoiceDate { get; set; }
 
     public decimal TotalAmount { get; set; }
 
@@ -17,5 +17,5 @@ public partial class Invoice
 
     public decimal Profit { get; set; }
 
-    public virtual Order? Order { get; set; }
+    public virtual CustomerOrder? Order { get; set; }
 }

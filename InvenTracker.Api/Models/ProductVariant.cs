@@ -15,7 +15,13 @@ public partial class ProductVariant
 
     public int Quantity { get; set; }
 
-    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public int? UnitId { get; set; }
+
+    public virtual ICollection<CustomerOrderItem> CustomerOrderItems { get; set; } = new List<CustomerOrderItem>();
 
     public virtual Product? Product { get; set; }
+
+    public virtual Unit? Unit { get; set; }
+
+    public virtual ICollection<WarehouseOrderItem> WarehouseOrderItems { get; set; } = new List<WarehouseOrderItem>();
 }
