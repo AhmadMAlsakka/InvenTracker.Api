@@ -1,5 +1,7 @@
 ﻿using InvenTracker.Api.Models;
+using InvenTracker.Api.Repository;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -9,10 +11,23 @@ namespace InvenTracker.Api.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        //Retrieve a list of all orders for a selected period of time
-        public List<Order> GetOrdersforDate(DateTime startDate, DateTime endDate)
+        public InvenTrackerRepository InvenTrackerRepository { get; }
+
+        public OrdersController(InvenTrackerRepository invenTrackerRepository)
         {
-            return new List<Order>();
+            InvenTrackerRepository = invenTrackerRepository;
+        }
+        [HttpGet]
+        public async Task<ActionResult<List<CustomerOrder>>> GetOrderHistoryForCustomerUsingDate(int customerID,DateTime startDate, DateTime endDate)
+        {
+            var CustomerOrders = await InvenTrackerRepository.GetOrderHistoryForCustomerUsingDate(customerID, startDate, endDate);
+            return Ok(CustomerOrders.ToList());
+        }
+
+
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            return Ok("Order Cancelled");
         }
     }
 }

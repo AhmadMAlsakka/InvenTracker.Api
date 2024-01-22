@@ -9,12 +9,12 @@
 
   <ItemGroup>
     <Compile Remove="Repository\InvenTrackerRepo.Orders.cs" />
-    <Compile Remove="Repository\InvenTrackerRepository.OrderItems.cs" />
+    <Compile Remove="Repository\InvenTrackerRepository.CustomerOrderItems.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Repository\InvenTrackerRepository.OrderItems.cs" />
-    <None Include="Repository\InvenTrackerRepository.Orders.cs" />
+    <None Include="Repository\InvenTrackerRepository.CustomerOrderItems.cs" />
+    <None Include="Repository\InvenTrackerRepository.CustomerOrders.cs" />
   </ItemGroup>
 
   <ItemGroup>

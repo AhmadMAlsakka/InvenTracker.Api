@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace InvenTracker.Api.Models;
 
-public partial class WarehouseOrder
+public partial class WarehouseOrder 
 {
     public int OrderId { get; set; }
 

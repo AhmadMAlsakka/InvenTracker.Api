@@ -1,20 +1,28 @@
 ﻿using InvenTracker.Api.Models;
+using Microsoft.EntityFrameworkCore;
+using static InvenTracker.Api.Enum.InvenTrackerEnums;
 
 namespace InvenTracker.Api.Repository
 {
     public partial class InvenTrackerRepository
     {
-        public InvenTrackerRepository(InventrackerContext context)
+        public InvenTrackerRepository(InvenTrackerContext invenTrackerContext)
         {
-            Context = context;
+            this.dbContext = invenTrackerContext;
         }
 
-        public InventrackerContext Context { get; }
+        public InvenTrackerContext dbContext { get; }
 
-        public async Task CancelCustomerOrder(int orderId)
+        public async Task CancelOrder(int orderId)
 		{
-
-		}
+			
+               var order = await dbContext.CustomerOrders.FirstOrDefaultAsync(x=> x.CustomerId == orderId);
+            if (order != null)
+            {
+                order.Status = (int)OrderStatus.Canceled;
+                await dbContext.SaveChangesAsync();
+            }
+        }
 
 		public Task CancelWarehouseOrder(int orderId)
 		{
@@ -36,12 +44,12 @@ namespace InvenTracker.Api.Repository
 			throw new NotImplementedException();
 		}
 
-		public Task<IEnumerable<CustomerOrder>> GetCustomerOrders()
+		public async Task<IEnumerable<CustomerOrder>> GetCustomerOrders()
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<IEnumerable<Order>> GetOrderHistoryForCustomer(int customerId)
+		public Task<IEnumerable<CustomerOrder>> GetOrderHistoryForCustomer(int customerId)
 		{
 			throw new NotImplementedException();
 		}
