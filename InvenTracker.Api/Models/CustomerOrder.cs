@@ -17,6 +17,8 @@ public partial class CustomerOrder
 
     public int? WarehouseId { get; set; }
 
+    public int PaymentStatus { get; set; }
+
     public virtual Customer? Customer { get; set; }
 
     public virtual ICollection<CustomerOrderItem> CustomerOrderItems { get; set; } = new List<CustomerOrderItem>();

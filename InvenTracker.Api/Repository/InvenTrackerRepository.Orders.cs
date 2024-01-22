@@ -4,9 +4,16 @@ namespace InvenTracker.Api.Repository
 {
     public partial class InvenTrackerRepository
     {
-		public Task CancelCustomerOrder(int orderId)
+        public InvenTrackerRepository(InventrackerContext context)
+        {
+            Context = context;
+        }
+
+        public InventrackerContext Context { get; }
+
+        public async Task CancelCustomerOrder(int orderId)
 		{
-			throw new NotImplementedException();
+
 		}
 
 		public Task CancelWarehouseOrder(int orderId)

@@ -17,6 +17,8 @@ public partial class WarehouseOrder
 
     public int? WarehouseId { get; set; }
 
+    public int PaymentStatus { get; set; }
+
     public virtual User? User { get; set; }
 
     public virtual Vendor? Vendor { get; set; }
